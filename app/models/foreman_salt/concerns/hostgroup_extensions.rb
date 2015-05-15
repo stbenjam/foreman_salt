@@ -15,11 +15,7 @@ module ForemanSalt
       end
 
       def all_salt_modules
-        if ancestry.present?
-          (self.salt_modules + self.inherited_salt_modules).uniq
-        else
-          self.salt_modules
-        end
+        (self.salt_modules + self.inherited_salt_modules).uniq
       end
 
       def inherited_salt_modules
@@ -27,11 +23,8 @@ module ForemanSalt
       end
 
       def inherited_salt_module_ids
-        if ancestry.present?
-          self.class.sort_by_ancestry(ancestors.reject { |ancestor| ancestor.salt_module_ids.empty? }).map(&:salt_module_ids).inject(&:+).uniq
-        else
-          []
-        end
+        ids = self.class.sort_by_ancestry(ancestors.reject { |ancestor| ancestor.salt_module_ids.empty? }).map(&:salt_module_ids).inject(&:+) if ancestry.present?
+        ids || []
       end
 
       def salt_proxy
