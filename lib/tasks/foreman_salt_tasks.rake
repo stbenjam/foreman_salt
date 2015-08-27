@@ -33,5 +33,6 @@ load 'tasks/jenkins.rake'
 if Rake::Task.task_defined?(:'jenkins:unit')
   Rake::Task['jenkins:unit'].enhance do
     Rake::Task['test:foreman_salt'].invoke
+    Rake::Task['rubocop_salt'].invoke
   end
 end
