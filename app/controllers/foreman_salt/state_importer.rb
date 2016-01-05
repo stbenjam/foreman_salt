@@ -46,10 +46,10 @@ module ForemanSalt
     end
 
     def add_to_environment(states, environment)
-      environment = SaltEnvironment.find_or_create_by_name(environment)
+      environment = SaltEnvironment.where(:name => environment).first_or_create
 
       states.each do |state_name|
-        state = SaltModule.find_or_create_by_name(state_name)
+        state = SaltModule.where(:name => state_name).first_or_create
         state.salt_environments << environment unless state.salt_environments.include? environment
       end
     end
