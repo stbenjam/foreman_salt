@@ -55,10 +55,10 @@ module ForemanSalt
     end
 
     def remove_from_environment(states, environment)
-      return unless (environment = SaltEnvironment.find(environment))
+      return unless (environment = SaltEnvironment.friendly.find(environment))
 
       states.each do |state_name|
-        state = SaltModule.find(state_name)
+        state = SaltModule.friendly.find(state_name)
         state.salt_environments.delete(environment) if state
       end
     end
