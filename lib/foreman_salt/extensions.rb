@@ -4,7 +4,6 @@ begin
 
   # Helper Extensions
   ::HostsHelper.send :include, ForemanSalt::HostsHelperExtensions
-  ::SmartProxiesHelper.send :include, ForemanSalt::SmartProxiesHelperExtensions
 
   # Model Extensions
   ::Host::Managed.send :include, ForemanSalt::Concerns::HostManagedExtensions

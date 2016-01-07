@@ -3,6 +3,9 @@ Foreman::Plugin.register :foreman_salt do
 
   apipie_documented_controllers ["#{ForemanSalt::Engine.root}/app/controllers/foreman_salt/api/v2/*.rb"]
 
+  proxy_action N_('Salt Keys'), :feature => 'Salt', :controller => 'foreman_salt/salt_keys', :action => 'index'
+  proxy_action N_('Salt Autosign'), :feature => 'Salt', :controller => 'foreman_salt/salt_autosign', :action => 'index'
+
   # Menus
   menu :top_menu, :salt_environments,
        :url_hash => { :controller => :'foreman_salt/salt_environments', :action => :index },
