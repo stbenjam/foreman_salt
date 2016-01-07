@@ -36,8 +36,10 @@ module ForemanSalt
         process_normal
       end
 
-      @host.refresh_statuses
       @host.save(:validate => false)
+      @host.reload
+      @host.refresh_statuses
+
       logger.info("Imported report for #{@host} in #{(Time.zone.now - start_time).round(2)} seconds")
     end
 
