@@ -1,0 +1,41 @@
+<%= javascript 'foreman_salt/salt_keys' %>
+
+<ul id="proxy-salt-tab" class="nav nav-tabs nav-tabs-pf">
+  <li class="active"><a href="#salt_general" data-toggle="tab"><%= _("General") %></a></li>
+  <% if authorized_for(:permission => :view_smart_proxies_salt, :auth_object => @smart_proxy, :authorizer => authorizer) %>
+  <li><a href="#salt_keys" data-toggle="tab"><%= _("Keys") %></a></li>
+  <% end %>
+  <% if authorized_for(:permission => :view_smart_proxies_autosign, :auth_object => @smart_proxy, :authorizer => authorizer) %>
+  <li><a href="#salt_autosign" data-toggle="tab"><%= _("Autosign entries") %></a></li>
+  <% end %>
+</ul>
+<div id="proxy-salt-tab-content" class="tab-content">
+  <div class="tab-pane active in" id="salt_general">
+    <div class="row">
+      <div class="col-md-6">
+        <%= show_feature_version('salt') %>
+        <div class="row">
+          <div class="col-md-4"><%= _('Hosts managed:') %></div>
+          <div class="col-md-8">
+            <%= link_to Host::Managed.where(:salt_proxy_id => @smart_proxy.id).count, hosts_path(:search => "saltmaster = \"#{@smart_proxy.name}\"") %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid container-cards-pf">
+      <div class="row row-cards-pf">
+        <% if authorized_for(:permission => :view_smart_proxies_salt_keys, :auth_object => @smart_proxy) %>
+        <span data-ajax-url="<%= counts_smart_proxy_salt_keys_path(:smart_proxy_id => @smart_proxy) %>"><%= spinner%></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if authorized_for(:permission => :view_smart_proxies_salt, :auth_object => @smart_proxy, :authorizer => authorizer) %>
+    <div class="tab-pane" id="salt_keys" data-ajax-url="/smart_proxies/<%= @smart_proxy.id %>/salt_keys" data-on-complete="keysTable"><%= spinner %></div>
+  <% end %>
+  <% if authorized_for(:permission => :view_smart_proxies_autosign, :auth_object => @smart_proxy, :authorizer => authorizer) %>
+    <div class="tab-pane" id="salt_autosign" data-ajax-url="/smart_proxies/<%= @smart_proxy.id %>/salt_autosign"><%= spinner %></div>
+  <% end %>
+</div>

@@ -57,11 +57,16 @@ Rails.application.routes.draw do
 
   constraints(:smart_proxy_id => /[^\/]+/) do
     resources :smart_proxies, :except => [:show] do
-      constraints(:id => /[^\/]+/) do
-        resources :salt_autosign, :only => [:index, :destroy, :create, :new], :controller => 'foreman_salt/salt_autosign'
-        resources :salt_keys, :only => [:index, :destroy], :controller => 'foreman_salt/salt_keys' do
+      resources :salt_autosign, :only => [:index, :destroy, :create, :new], :controller => 'foreman_salt/salt_autosign'
+      resources :salt_keys, :only => [:index], :controller => 'foreman_salt/salt_keys' do
+        collection do
+          get :counts
+        end
+
+        constraints(:salt_key_id => /[^\/]+/) do
           get :accept
           get :reject
+          delete :destroy
         end
       end
     end

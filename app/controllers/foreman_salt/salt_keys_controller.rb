@@ -1,20 +1,30 @@
 module ForemanSalt
   class SaltKeysController < ::ForemanSalt::ApplicationController
+    def counts
+      counts = {}
+      ::ForemanSalt::SmartProxies::SaltKeys.all(find_proxy).group_by { |key| key.state }.each do |k, v|
+        counts[k] = v.count
+      end
+
+      render :partial => 'foreman_salt/salt_keys/counts', :locals => {:keys => counts}
+    end
+
     def index
       @proxy = find_proxy
 
       Rails.cache.delete("saltkeys_#{@proxy.id}") if params[:expire_cache] == 'true'
       keys = if params[:state].blank?
-               SmartProxies::SaltKeys.all @proxy
+               ::ForemanSalt::SmartProxies::SaltKeys.all @proxy
              else
-               SmartProxies::SaltKeys.find_by_state @proxy, params[:state].downcase
+               ::ForemanSalt::SmartProxies::SaltKeys.find_by_state @proxy, params[:state].downcase
              end
-      @keys = keys.sort.paginate :page => params[:page], :per_page => Setting::General.entries_per_page
+
+      render :partial => 'foreman_salt/salt_keys/list', :locals => {:keys => keys.sort.paginate(:page => params[:page], :per_page => Setting::General.entries_per_page)}
     end
 
     def accept
       @proxy = find_proxy(:edit_smart_proxies_salt_keys)
-      key = SmartProxies::SaltKeys.find(@proxy, params[:salt_key_id])
+      key = ::ForemanSalt::SmartProxies::SaltKeys.find(@proxy, params[:salt_key_id])
       if key.accept
         process_success(:success_redirect => hash_for_smart_proxy_salt_keys_path(:state => params[:state], :expire_cache => true),
                         :success_msg => _("Key accepted for #{key}"), :object_name => key.to_s)
@@ -25,7 +35,7 @@ module ForemanSalt
 
     def reject
       @proxy = find_proxy(:edit_smart_proxies_salt_keys)
-      key = SmartProxies::SaltKeys.find(@proxy, params[:salt_key_id])
+      key = ::ForemanSalt::SmartProxies::SaltKeys.find(@proxy, params[:salt_key_id])
       if key.reject
         process_success(:success_redirect => hash_for_smart_proxy_salt_keys_path(:state => params[:state], :expire_cache => true),
                         :success_msg => _("Key rejected for #{key}"), :object_name => key.to_s)
@@ -36,7 +46,7 @@ module ForemanSalt
 
     def destroy
       @proxy = find_proxy(:destroy_smart_proxies_salt_keys)
-      key = SmartProxies::SaltKeys.find(@proxy, params[:id])
+      key = ::ForemanSalt::SmartProxies::SaltKeys.find(@proxy, params[:id])
       if key.delete
         process_success(:success_redirect => hash_for_smart_proxy_salt_keys_path(:state => params[:state], :expire_cache => true),
                         :success_msg => _("Key deleted for #{key}"), :object_name => key.to_s)

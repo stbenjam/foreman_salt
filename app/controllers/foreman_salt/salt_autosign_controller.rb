@@ -2,8 +2,8 @@ module ForemanSalt
   class SaltAutosignController < ::ForemanSalt::ApplicationController
     def index
       setup
-      autosign = @api.autosign_list
-      @autosign = autosign.paginate :page => params[:page], :per_page => Setting::General.entries_per_page
+      autosign = @api.autosign_list.paginate :page => params[:page], :per_page => Setting::General.entries_per_page
+      render :partial => 'foreman_salt/salt_autosign/list', :locals => {:autosign => autosign.sort.paginate(:page => params[:page], :per_page => Setting::General.entries_per_page)}
     end
 
     def new

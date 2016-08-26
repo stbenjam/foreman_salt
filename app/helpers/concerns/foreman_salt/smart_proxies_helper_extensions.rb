@@ -4,6 +4,8 @@ module ForemanSalt
 
     included do
       alias_method_chain :proxy_actions, :salt_proxy
+      alias_method_chain :services_tab_features, :salt_proxy
+      alias_method_chain :tabbed_features, :salt_proxy
     end
 
     def proxy_actions_with_salt_proxy(proxy, authorizer)
@@ -15,6 +17,15 @@ module ForemanSalt
       end
 
       actions
+    end
+
+    def services_tab_features_with_salt_proxy(proxy)
+      tabbed_features_without_salt_proxy(proxy) - ['Salt']
+    end
+
+    def tabbed_features_with_salt_proxy(proxy)
+      without = tabbed_features_without_salt_proxy(proxy)
+      proxy.has_feature?('Salt') ? without << 'Salt' : without
     end
   end
 end

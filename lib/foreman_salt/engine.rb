@@ -29,12 +29,13 @@ module ForemanSalt
 
     initializer 'foreman_salt.assets.precompile' do |app|
       app.config.assets.precompile += %w(foreman_salt/states.js)
+      app.config.assets.precompile += %w(foreman_salt/salt_keys.js)
     end
 
     initializer 'foreman_salt.configure_assets', :group => :assets do
       SETTINGS[:foreman_salt] = {
         :assets => {
-          :precompile => ['foreman_salt/states.js']
+          :precompile => ['foreman_salt/states.js', 'foreman_salt/salt_keys.js']
         }
       }
     end
